@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.db import IntegrityError
 
 
-def register(request):
+def register_(request):
     login_dict = {
         'emailNotExistedAlert': "",
         'passwordIncorrect': "",
