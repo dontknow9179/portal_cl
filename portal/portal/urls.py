@@ -21,6 +21,5 @@ urlpatterns = [
     path('', view.homepage, name='home'),
     path('userlogin', user.login, name='login'),
     path('userregister', user.register, name='register'),
-    path('PortalModel/', include('PortalModel.urls')),
     path('admin/', admin.site.urls),
 ]

@@ -3,4 +3,4 @@ from django.http import HttpResponse
 
 
 def homepage(request):
-    return HttpResponse("Hello, world. You're at the PortalModel index.")
+    return HttpResponse("Hello, world. You're at the homepage.")
