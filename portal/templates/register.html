@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -130,27 +130,45 @@
     <script type="text/javascript">
         function userRegister() {           
             var username_alert = document.getElementById("usernameOversizedAlert");
-            
+            var email_alert = document.getElementById('emailExistedAlert');
             var password_alert = document.getElementById("passwordOversizedAlert");
             var passwordCheck_alert = document.getElementById("passwordCheckAlert");
             var legal = true;
     
             // nickname sanity check
-            if (document.getElementById("inputUserame").value.length > 20) {
+            if (document.getElementById("inputUsername").value.length > 20) {
                 username_alert.innerHTML = "用户名长度限制(<=20)";
+                legal = false;
+            } 
+            else if (document.getElementById("inputUsername").value.length < 1) {
+                username_alert.innerHTML = "用户名不能为空";
                 legal = false;
             } 
             else {
                 username_alert.innerHTML = "";
             }
+
+            //email can not be null
+            if (document.getElementById("inputEmail").value.length < 1) {
+                email_alert.innerHTML = "邮箱不能为空";
+                legal = false;
+            } else {
+                email_alert.innerHTML = "";
+            }
+
             // password length check
             if (document.getElementById("inputPassword").value.length > 20) {
                 password_alert.innerHTML = "密码长度限制(<=20)";
+                legal = false;
+            } 
+            else if (document.getElementById('inputPassword').value.length < 1) {
+                password_alert.innerHTML = "密码不能为空";
                 legal = false;
             }
             else {
                 password_alert.innerHTML = "";
             }
+
             // password double check
             if (document.getElementById("inputConfirmPassword").value != document.getElementById("inputPassword").value) {
                 passwordCheck_alert.innerHTML = "与初始密码不同";
@@ -160,16 +178,23 @@
                 passwordCheck_alert.innerHTML = "";
             }
     
-            if (legal) {
+            if (legal == true) {
                 var form = document.getElementById("user-register");
                 form.action = "{% url 'register' %}";
                 form.submit();
+            }
+            else{
+                console.log("legal");
+                return flase;
+                // alert("legal==false");
             }
         }    
     </script>
 </head>
 
 <body>
+  <form id="user-register" action="" method="POST">
+  {% csrf_token %}
     <div class="container">
       <div class="row">
         <div class="col-lg-10 col-xl-9 mx-auto">
@@ -179,16 +204,16 @@
             </div>
             <div class="card-body">
                 <h5 class="card-title text-center font-weight-bold">注 册</h5>
-                <form id="user-register" class="form-signin" method="POST">
-                    {% csrf_token %}
+                <div class="form-signin">
+                    
                     <div class="form-label-group">
-                        <input type="text" name="username" id="inputUserame" class="form-control" placeholder="输入用户名" required autofocus>
+                        <input type="text" name="n" id="inputUsername" class="form-control" placeholder="输入用户名">
                         <label for="inputUserame">输入用户名</label>
                         <p id="usernameOversizedAlert" class="small" style="font-weight:700; color: brown; text-align: right;"></p>
                     </div>
                 
                     <div class="form-label-group">
-                        <input type="email" name="email" id="inputEmail" class="form-control" placeholder="输入邮箱" required>
+                        <input type="email" name="e" id="inputEmail" class="form-control" placeholder="输入邮箱" required>
                         <label for="inputEmail">输入邮箱</label>
                         <p id="emailExistedAlert" class="small" style="font-weight:700; color: brown; text-align: right;">{{ emailExistedAlert }}</p>
                     </div>
@@ -196,25 +221,26 @@
                     <hr>
                 
                     <div class="form-label-group">
-                        <input id="inputPassword" type="password" name="password" class="form-control" placeholder="输入密码" required>
+                        <input id="inputPassword" type="password" name="p" class="form-control" placeholder="输入密码">
                         <label for="inputPassword">输入密码</label>
                         <p id="passwordOversizedAlert" class="small" style="font-weight:700; color: brown; text-align: right;"></p>
                     </div>
                     
                     <div class="form-label-group">
-                        <input id="inputConfirmPassword" type="password" class="form-control" placeholder="确认密码" required>
+                        <input id="inputConfirmPassword" type="password" class="form-control" placeholder="确认密码">
                         <label for="inputConfirmPassword">确认密码</label>
                         <p id="passwordCheckAlert" class="small" style="font-weight:700; color: brown; text-align: right;"></p>
                     </div>
                 
-                    <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit" onclick="userRegister()">确认注册</button>
+                    <a href="#" class="btn btn-lg btn-primary btn-block" onclick="userRegister()">确认注册</a>
                     <a class="d-block text-center mt-2 small" href="{% url 'login_page' %}">登录</a>
-                </form>
+                </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+  </form>
 </body>
 
 </html>

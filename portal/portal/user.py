@@ -13,10 +13,10 @@ def register_(request):
         'useremail': ""
     }
     request.encoding = 'utf-8'
-    if request.method == 'POST':
-        user_email = request.POST['email']
-        user_name = request.POST['username']
-        pwd = request.POST['password']
+    if request.method == 'POST':        
+        user_name = request.POST['n']
+        user_email = request.POST['e']
+        pwd = request.POST['p']
         # successfully create new user
         register_dict = {}
         try:
@@ -39,8 +39,8 @@ def login_(request):
     }
     request.encoding = 'utf-8'
     if request.method == 'POST':
-        user_email = request.POST['email']
-        pwd = request.POST['password']
+        user_email = request.POST['e']
+        pwd = request.POST['p']
         try:
             UserExtension.objects.get(email=user_email)
         except UserExtension.DoesNotExist:

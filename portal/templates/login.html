@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -130,14 +130,20 @@
 
     <script type="text/javascript">
         function userLogin() {
-            var form = document.getElementById('user-login ');
+            var form = document.getElementById('user-login');
+            alert('login1');
+            console.log('login1');
             form.action = "{% url 'login' %}";
             form.submit();
+            alert('login3');
         }
     </script>
 </head>
 
 <body>
+  <form id="user-login" action="" method="POST">
+    {% csrf_token %}  
+  
     <div class="container">
       <div class="row">
         <div class="col-lg-10 col-xl-9 mx-auto">
@@ -147,28 +153,28 @@
             </div>
             <div class="card-body">
                 <h5 class="card-title text-center font-weight-bold">登 录</h5>
-                <form id="user-login" class="form-signin" method="POST">
-                    {% csrf_token %}
+                <div class="form-signin">
                     <div class="form-label-group">
-                      <input type="email" name="email" id="inputEmail" class="form-control" value="{{ useremail }}" placeholder="输入邮箱" required>
+                      <input type="email" name="e" id="inputEmail" class="form-control" value="{{ useremail }}" placeholder="输入邮箱" required>
                       <label for="inputEmail">输入邮箱</label>
                       <p class="small" style="font-weight:700; color: brown; text-align: right;">{{ emailNotExistedAlert }}</p>
                     </div>
                 
                     <div class="form-label-group">
-                      <input type="password" name="password" id="inputPassword" class="form-control" placeholder="输入密码" required>
+                      <input type="password" name="p" id="inputPassword" class="form-control" placeholder="输入密码" required>
                       <label for="inputPassword">输入密码</label>
                       <p class="small" style="font-weight:700; color: brown; text-align: right;">{{ passwordIncorrect }}</p>
                     </div>
                 
-                    <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit" onclick="userLogin()">确认登录</button>
+                    <a href="#" class="btn btn-lg btn-primary btn-block text-uppercase" onclick="userLogin()">确认登录</a>
                     <a class="d-block text-center mt-2 small" href="{% url 'register_page' %}">注册</a>
-                </form>
+                </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+  </form>
 </body>
 
 </html>
