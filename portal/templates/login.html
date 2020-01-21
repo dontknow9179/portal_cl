@@ -43,7 +43,8 @@
         .card-signin .card-img-left {
           width: 45%;
           /* Link to your background image using in the property below! */
-          background: scroll center url('https://source.unsplash.com/WEQbe2jBg40/414x512');
+          background: scroll center url('https://source.unsplash.com/WEQbe2jBg40/414x512'); 
+          /* background: scroll center; */
           background-size: cover;
         }
 
@@ -159,7 +160,7 @@
         }
     </script>
 </head>
-
+{% load static %}
 <body>
   <form id="user-login" action="" method="POST">
     {% csrf_token %}  
