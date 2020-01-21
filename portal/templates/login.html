@@ -130,12 +130,32 @@
 
     <script type="text/javascript">
         function userLogin() {
-            var form = document.getElementById('user-login');
-            alert('login1');
-            console.log('login1');
-            form.action = "{% url 'login' %}";
-            form.submit();
-            alert('login3');
+			var legal = true;
+			var email_alert = document.getElementById("email_alert");
+			var password_alert = document.getElementById("password_alert");
+			//email can not be null
+            if (document.getElementById("inputEmail").value.length < 1) {
+                email_alert.innerHTML = "邮箱不能为空";
+                legal = false;
+            } else {
+                email_alert.innerHTML = "";
+            }
+			if (document.getElementById("inputPassword").value.length < 1){
+				password_alert.innerHTML = "密码不能为空";
+                legal = false;
+			}
+			else {
+				password_alert.innerHTML = "";
+			}
+
+			if(legal == true) {
+				var form = document.getElementById('user-login');
+            	console.log('login1');
+            	form.action = "{% url 'login' %}";
+            	form.submit();
+			}
+            
+            
         }
     </script>
 </head>
@@ -155,15 +175,15 @@
                 <h5 class="card-title text-center font-weight-bold">登 录</h5>
                 <div class="form-signin">
                     <div class="form-label-group">
-                      <input type="email" name="e" id="inputEmail" class="form-control" value="{{ useremail }}" placeholder="输入邮箱" required>
+                      <input type="email" name="e" id="inputEmail" class="form-control" value="{{ useremail }}" placeholder="输入邮箱">
                       <label for="inputEmail">输入邮箱</label>
-                      <p class="small" style="font-weight:700; color: brown; text-align: right;">{{ emailNotExistedAlert }}</p>
+                      <p id="email_alert" class="small" style="font-weight:700; color: brown; text-align: right;">{{ emailNotExistedAlert }}</p>
                     </div>
                 
                     <div class="form-label-group">
-                      <input type="password" name="p" id="inputPassword" class="form-control" placeholder="输入密码" required>
+                      <input type="password" name="p" id="inputPassword" class="form-control" placeholder="输入密码">
                       <label for="inputPassword">输入密码</label>
-                      <p class="small" style="font-weight:700; color: brown; text-align: right;">{{ passwordIncorrect }}</p>
+                      <p id="password_alert" class="small" style="font-weight:700; color: brown; text-align: right;">{{ passwordIncorrect }}</p>
                     </div>
                 
                     <a href="#" class="btn btn-lg btn-primary btn-block text-uppercase" onclick="userLogin()">确认登录</a>
