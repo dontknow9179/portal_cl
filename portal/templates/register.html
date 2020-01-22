@@ -2,9 +2,13 @@
 <html lang="en">
 
 <head>
+	{% load static %}
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Register</title>
+	<link rel="shortcut icon" href="{% static 'mainpage.ico' %}">
+    <link rel="bookmark" href="{% static 'mainpage.ico' %}">
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
     <link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.css" rel="stylesheet">
@@ -154,13 +158,16 @@
             if (document.getElementById("inputEmail").value.length < 1) {
                 email_alert.innerHTML = "邮箱不能为空";
                 legal = false;
-            } else {
+            } else if (document.getElementById("inputEmail").value.length > 150){
+				email_alert.innerHTML = "邮箱长度限制(<=150)";
+                legal = false;
+			} else {
                 email_alert.innerHTML = "";
             }
 
             // password length check
-            if (document.getElementById("inputPassword").value.length > 20) {
-                password_alert.innerHTML = "密码长度限制(<=20)";
+            if (document.getElementById("inputPassword").value.length > 30) {
+                password_alert.innerHTML = "密码长度限制(<=30)";
                 legal = false;
             } 
             else if (document.getElementById('inputPassword').value.length < 1) {
@@ -193,7 +200,7 @@
         }    
     </script>
 </head>
-{% load static %}
+
 <body>
   <form id="user-register" action="" method="POST">
   {% csrf_token %}

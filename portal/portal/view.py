@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 
 def homepage(request):
-    return HttpResponse("Hello, world. You're at the homepage.")
+    return render(request, 'index.html')
 
 
 def login_page(request):
