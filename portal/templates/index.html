@@ -5,7 +5,7 @@
     {% load static %}
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Portal</title>
     <link rel="shortcut icon" href="{% static 'mainpage.ico' %}">
     <link rel="bookmark" href="{% static 'mainpage.ico' %}">
@@ -21,9 +21,143 @@
 
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
-    
+
+    <style type="text/css">
+        body {
+            background: #f9f9f9;
+        }
+
+        #wrapper {
+            padding: 90px 15px;
+        }
+
+        .navbar-expand-lg .navbar-nav.side-nav {
+            flex-direction: column;
+        }
+
+        .header-top {
+            box-shadow: 0 3px 5px rgba(0, 0, 0, .1)
+        }
+
+        @media(min-width:992px) {
+            #wrapper {
+                margin-left: 200px;
+                padding: 90px 15px 15px;
+            }
+        }
+
+        .navbar-nav.side-nav {
+            background: #f1f1f1;
+            box-shadow: 2px 1px 2px rgba(0, 0, 0, .1);
+            position: fixed;
+            top: 60px;
+            flex-direction: column !important;
+            left: 0;
+            width: 150px;
+            overflow-y: auto;
+            bottom: 0;
+            overflow-x: hidden;
+            padding-bottom: 40px;
+            padding-top: 7px;
+
+        }
+       
+        .nav-tabs .nav-link.active {
+            background: #e4e2e2;
+            border-color: transparent transparent rgb(129, 126, 126) transparent;
+            border-bottom: 3px solid rgb(129, 126, 126);
+        }
+        .nav-link {
+            border: 1px solid transparent;
+            /* border-top-left-radius: .25rem;
+            border-top-right-radius: .25rem; */
+            font-weight: 500;
+            padding-left: 7px;
+        }
+        .nav-link:hover {
+            border: none;
+            background: #e4e2e2;
+        }
+    </style>
 </head>
 
 <body>
+    <div id="wrapper">
+        <nav class="navbar header-top fixed-top navbar-expand-lg navbar-light"
+            style="background-color: rgb(255, 255, 255);">
+            <a class="navbar-brand" href="{% url 'index' %}" style="font-weight: 600;">大数据试验场数据管理平台</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
+                aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarText">
+                <div class="nav navbar-nav side-nav nav-tabs" role="tablist">
+                    <a class="nav-item nav-link activate" id="nav-home-tab" data-toggle="tab" href="#nav-home"
+                        role="tab" aria-controls="nav-home" aria-selected="true">Home</a>
 
+                    <a class="nav-item nav-link" id="nav-p1-tab" data-toggle="tab" href="#nav-p1" role="tab"
+                        aria-controls="nav-p1" aria-selected="false">Side Menu Items</a>
+
+                    <a class="nav-item nav-link" id="nav-p2-tab" data-toggle="tab" href="#nav-p2" role="tab"
+                        aria-controls="nav-p2" aria-selected="false">Pricing</a>
+                </div>
+                <div class="tab-content">
+                    <div id="nav-home" class="tab-pane fade show active" role="tabpanel" aria-labelledby="nav-home-tab">
+                        <p>home</p>
+                    </div>
+                    <div id="nav-p1" class="tab-pane fade" role="tabpanel" aria-labelledby="nav-p1-tab">
+                        <p>p1</p>
+                    </div>
+                    <div id="nav-p2" class="tab-pane fade" role="tabpanel" aria-labelledby="nav-p2-tab">
+                        <p>p2</p>
+                    </div>
+                </div>
+                <ul class="navbar-nav ml-md-auto d-md-flex">
+                    {% if not user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login_page' %}"><i title="登录/注册" class="fas fa-user"
+                                style="color: rgb(129, 126, 126);"></i></a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i title="我的账户" class="fas fa-user"
+                                style="color: rgb(129, 126, 126);"></i></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutWindow"
+                            style="color: rgb(129, 126, 126);"><i title="退出登录" class="fas fa-sign-in-alt"></i></a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+    </div>
+
+    <!-- <div class="container-fluid">
+        <div class="row">
+
+
+        </div>
+    </div> -->
+    <!-- LOGOUT WINDOW -->
+    <div class="modal fade" id="logoutWindow" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="border: 0px; margin: 0px;">
+                    <h5 class="modal-title" id="exampleModalLabel">确定要退出吗？</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <!-- <div class="modal-body">
+                确定要退出吗？
+            </div> -->
+                <div class="modal-footer" style="border: 0px; margin: 0px;">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">返回</button>
+                    <a href="{% url 'logout' %}"><button type="button" class="btn btn-primary">退出</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
