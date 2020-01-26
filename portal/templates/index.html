@@ -9,19 +9,25 @@
     <title>Portal</title>
     <link rel="shortcut icon" href="{% static 'mainpage.ico' %}">
     <link rel="bookmark" href="{% static 'mainpage.ico' %}">
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-    <link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.css" rel="stylesheet">
+    <!-- CSS -->   
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+        integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://www.bootcss.com/p/buttons/css/buttons.css">
 
-    <!-- jQuery library -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
-    <!-- Popper JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-
-    <!-- Latest compiled JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
-
+    <!-- JAVASCRIPT -->
+    <script src="https://code.jquery.com/jquery-3.4.1.js"
+        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+    <!-- <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script> -->
+    <script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+    </script>
+    
     <style type="text/css">
         body {
             background: #f9f9f9;
@@ -61,20 +67,18 @@
             padding-top: 7px;
 
         }
-       
-        .nav-tabs .nav-link.active {
+        #navbarText .nav-pills .nav-item.show .nav-link,
+        #navbarText .nav-pills .nav-item .nav-link.active {
+            color: rgb(25, 140, 235);
             background: #e4e2e2;
-            border-color: transparent transparent rgb(129, 126, 126) transparent;
-            border-bottom: 3px solid rgb(129, 126, 126);
+            
         }
-        .nav-link {
-            border: 1px solid transparent;
-            /* border-top-left-radius: .25rem;
-            border-top-right-radius: .25rem; */
+        #navbarText .nav-link {
+            color: rgb(65, 64, 64);
             font-weight: 500;
-            padding-left: 7px;
+            padding-left: 15px;
         }
-        .nav-link:hover {
+        #navbarText .nav-link:hover {
             border: none;
             background: #e4e2e2;
         }
@@ -91,16 +95,20 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarText">
-                <div class="nav navbar-nav side-nav nav-tabs" role="tablist">
-                    <a class="nav-item nav-link activate" id="nav-home-tab" data-toggle="tab" href="#nav-home"
-                        role="tab" aria-controls="nav-home" aria-selected="true">Home</a>
-
-                    <a class="nav-item nav-link" id="nav-p1-tab" data-toggle="tab" href="#nav-p1" role="tab"
-                        aria-controls="nav-p1" aria-selected="false">Side Menu Items</a>
-
-                    <a class="nav-item nav-link" id="nav-p2-tab" data-toggle="tab" href="#nav-p2" role="tab"
-                        aria-controls="nav-p2" aria-selected="false">Pricing</a>
-                </div>
+                <ul class="nav nav-pills navbar-nav side-nav" role="tablist">
+                    <li class="nav-item">
+                    <a class="nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home"
+                        role="tab" aria-controls="nav-home" aria-selected="true">主页</a>
+                    </li>
+                    <li class="nav-item">
+                    <a class="nav-link" id="nav-p1-tab" data-toggle="tab" href="#nav-p1" role="tab"
+                        aria-controls="nav-p1" aria-selected="false">我的数据</a>
+                    </li>
+                    <li class="nav-item">
+                    <a class="nav-link" id="nav-p2-tab" data-toggle="tab" href="#nav-p2" role="tab"
+                        aria-controls="nav-p2" aria-selected="false">数据分析</a>
+                    </li>
+                </ul>
                 <div class="tab-content">
                     <div id="nav-home" class="tab-pane fade show active" role="tabpanel" aria-labelledby="nav-home-tab">
                         <p>home</p>
