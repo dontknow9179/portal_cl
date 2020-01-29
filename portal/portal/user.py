@@ -1,4 +1,4 @@
-from PortalModel.models import File, UserExtension
+from PortalModel.models import Data, UserExtension
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
