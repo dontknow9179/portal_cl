@@ -59,3 +59,7 @@ def login_(request):
 def logout_(request):
     logout(request)
     return HttpResponseRedirect("/")
+
+
+def user_page(request):
+    return render(request, "user_page.html")

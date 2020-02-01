@@ -5,6 +5,7 @@ from PortalModel.models import Data, UserExtension
 from django.contrib.auth import authenticate
 from django.http import HttpResponseRedirect, HttpResponse
 from django.db import IntegrityError
+from django import forms
 from PortalModel.forms import DataForm
 
 def homepage(request):
@@ -27,14 +28,20 @@ def register_page(request):
     return render(request, 'register.html', register_dict)
 
 
-def testform(request):
-    form = DataForm()
+def testform(request):   
     if request.method == 'POST':
         form = DataForm(request.POST, request.FILES)
         if form.is_valid():
+            datafile = form.cleaned_data['datafile']
+            description = form.cleaned_data['description']
+            data = Data(nickname=request.user.userextension.nickname, 
+                        email=request.user.email, datafile=datafile, 
+                        description=description)
+            data.save()
             return HttpResponse('upload ok!')
         else:
             return HttpResponse('not valid')
     else:
+        form = DataForm()
         return render(request, 'formtest.html', {'form':form})
         
