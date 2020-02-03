@@ -8,6 +8,7 @@ from django.db import IntegrityError
 from django import forms
 from PortalModel.forms import DataForm
 
+
 def homepage(request):
     return render(request, 'index.html')
 
@@ -38,9 +39,10 @@ def testform(request):
                         email=request.user.email, datafile=datafile, 
                         description=description)
             data.save()
+            # return render(request, 'formtest.html', {'form':form})
             return HttpResponse('upload ok!')
         else:
-            return HttpResponse('not valid')
+            return render(request, 'formtest.html', {'form':form})
     else:
         form = DataForm()
         return render(request, 'formtest.html', {'form':form})
