@@ -142,13 +142,22 @@
             if (document.getElementById("inputEmail").value.length < 1) {
                 email_alert.innerHTML = "邮箱不能为空";
                 legal = false;
-            } else {
+            }
+			else if (document.getElementById("inputEmail").value.length > 150) {
+				email_alert.innerHTML = "邮箱长度限制(<=150)";
+                legal = false;
+			} 
+			else {
                 email_alert.innerHTML = "";
             }
 			if (document.getElementById("inputPassword").value.length < 1){
 				password_alert.innerHTML = "密码不能为空";
                 legal = false;
 			}
+			else if (document.getElementById("inputPassword").value.length > 30) {
+                password_alert.innerHTML = "密码长度限制(<=30)";
+                legal = false;
+            }
 			else {
 				password_alert.innerHTML = "";
 			}

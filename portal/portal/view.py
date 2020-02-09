@@ -23,8 +23,11 @@ def login_page(request):
 
 
 def register_page(request):
-    register_dict = {
-        'emailExistedAlert': ""
+    register_dict = {       
+        'userNameAlert': "",
+        'emailAlert': "",
+        'passwordAlert': "",
+        'passwordCheckAlert': ""
     }
     return render(request, 'register.html', register_dict)
 
@@ -46,4 +49,12 @@ def testform(request):
     else:
         form = DataForm()
         return render(request, 'formtest.html', {'form':form})
+
+
+def showdata(request):
+    data = Data.objects.all()
+    return render(request, 'tabletest.html', {'data':data})
+
+
+
         

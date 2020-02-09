@@ -15,6 +15,20 @@ class DataForm(forms.Form):
     )
     
 
+class LoginForm(forms.Form):
+    user_email = forms.EmailField(
+        max_length=150,
+        label='输入邮箱',
+        error_messages={'required':'邮箱不能为空'},
+        widget=forms.EmailInput(attrs={'placeholder':'输入邮箱'})
+    )
+    pwd = forms.CharField(
+        max_length=128,
+        label='输入密码',
+        widget=forms.PasswordInput(attrs={'placeholder':'输入密码'}),
+        error_messages={'required':'密码不能为空'}
+    )
+
 class RegisterForm(forms.Form):
     user_name = forms.CharField(
         max_length=50, 

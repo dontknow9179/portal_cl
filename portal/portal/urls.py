@@ -29,6 +29,7 @@ urlpatterns = [
     path('register_page', view.register_page, name='register_page'), 
     path('user_page', user.user_page, name='user_page'),
     path('testform', view.testform, name='testform'), 
+    path('showdata', view.showdata, name='showdata'),
     
     path('admin/', admin.site.urls),
     url(r'^static/(?P<path>.*)$', static.serve,
