@@ -52,8 +52,28 @@ def testform(request):
 
 
 def showdata(request):
+    showdata_dict = {}
+    showdata_dict['success'] = False
+    if request.method == 'POST':
+        form = DataForm(request.POST, request.FILES)
+        if form.is_valid():
+            datafile = form.cleaned_data['datafile']
+            description = form.cleaned_data['description']
+            data = Data(nickname=request.user.userextension.nickname, 
+                        email=request.user.email, datafile=datafile, 
+                        description=description)
+            data.save() 
+            showdata_dict['success'] = True         
+            form = DataForm()
+        else:
+            pass
+    else:
+        form = DataForm()
+        
     data = Data.objects.all()
-    return render(request, 'showdata.html', {'data':data})
+    showdata_dict['data'] = data
+    showdata_dict['form'] = form
+    return render(request, 'showdata.html', showdata_dict)
 
 
 

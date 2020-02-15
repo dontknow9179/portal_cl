@@ -10,14 +10,15 @@
     <link rel="shortcut icon" href="{% static 'mainpage.ico' %}">
     <link rel="bookmark" href="{% static 'mainpage.ico' %}">
     <!-- CSS -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css"/>
- 
+    <link rel="stylesheet" type="text/css"
+        href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" />
+
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
         integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
     <link rel="stylesheet" href="https://www.bootcss.com/p/buttons/css/buttons.css">
-    
+
 
     <!-- JAVASCRIPT -->
     <script src="https://code.jquery.com/jquery-3.4.1.js"
@@ -31,7 +32,7 @@
     <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
     <title>表格测试</title>
-    
+
     <style type="text/css">
         body {
             background: #f9f9f9;
@@ -51,8 +52,8 @@
 
         @media(min-width:992px) {
             #wrapper {
-                margin-left: 200px;
-                padding: 90px 15px 15px;
+                margin-left: 170px;
+                padding: 70px 15px 15px;
             }
         }
 
@@ -71,11 +72,13 @@
             padding-top: 7px;
 
         }
+
         /* #navbarText .nav-pills .nav-item.show .nav-link, */
         #navbarText .nav-pills .nav-item .nav-link.active {
             color: rgb(25, 140, 235);
             background: #dfdddd;
         }
+
         #navbarText .nav-link {
             color: rgb(65, 64, 64);
             font-weight: 500;
@@ -84,17 +87,52 @@
             -moz-border-radius: 0;
             border-radius: 0;
         }
+
         #navbarText .nav-link:hover {
             border: none;
             background: #e9e7e7;
         }
+
+        #btn-group-top .btn-left {
+            color:white; 
+            background-color: rgb(25, 140, 235);
+        }
+
+        #btn-group-top .btn-left:hover {
+            background-color: rgb(22, 130, 219);
+        }
+
+        #btn-group-top .btn-right {
+            margin-left: 5px; 
+            background-color: #f9f9f9; 
+            border-color: rgb(156, 206, 247); 
+            color:rgb(73, 164, 238);
+        }
+
+        #btn-group-top .btn-right:hover {
+            color: rgb(66, 146, 212);
+        }
     </style>
     <script type="text/javascript">
-        $(document).ready(function() {
-            $('#filetable').DataTable();
-        } );
+        $(document).ready(function () {
+            $('#filetable').DataTable({
+                "columnDefs": [{
+                    "orderable": false,
+                    "targets": 0
+                }],
+                "order": [[4,'desc']]
+            });
+
+            // {% if form.is_bound %}
+            $("#uploadWindow").modal("show");
+            // {% endif %}
+            // {% if success %}
+            alert("上传文件成功！")
+            // {% endif %}
+        });
     </script>
 </head>
+
 <body>
     <div id="wrapper">
         <nav class="navbar header-top fixed-top navbar-expand-lg navbar-light"
@@ -107,21 +145,24 @@
             <div class="collapse navbar-collapse" id="navbarText">
                 <ul class="nav nav-pills navbar-nav side-nav" role="tablist">
                     <li class="nav-item">
-                    <a class="nav-link" id="nav-home-tab" href="{% url 'index' %}" role="tab">主页</a>
+                        <a class="nav-link" href="{% url 'index' %}" role="tab">主页</a>
                     </li>
                     <!-- <li class="nav-item">
                     <a class="nav-link" id="nav-p1-tab" data-toggle="tab" href="#nav-p1" role="tab"
                         aria-controls="nav-p1" aria-selected="false">我的数据</a>
                     </li> -->
                     <li class="nav-item">
-                        <a class="nav-link active" data-toggle="tab" href="{% url 'showdata' %}" role="tab">我的数据</a>
+                        <a class="nav-link active" href="{% url 'showdata' %}" role="tab">我的数据</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'showdata' %}" role="tab">数据分析</a>
                     </li>
                     <!-- <li class="nav-item">
                     <a class="nav-link" id="nav-p2-tab" data-toggle="tab" href="#nav-p2" role="tab"
                         aria-controls="nav-p2" aria-selected="false">数据分析</a>
                     </li> -->
                 </ul>
-                
+
                 <ul class="navbar-nav ml-md-auto d-md-flex">
                     {% if not user.is_authenticated %}
                     <li class="nav-item">
@@ -130,9 +171,10 @@
                     </li>
                     {% else %}
                     <li class="nav-item row align-items-center" style="margin-right: 20px">
-                        <a style="font-weight: 500; color: rgb(77, 77, 77);">welcome, {{ user.userextension.nickname }}</a>
+                        <a style="font-weight: 500; color: rgb(77, 77, 77);">welcome,
+                            {{ user.userextension.nickname }}</a>
                     </li>
-                    
+
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'user_page' %}"><i title="我的账户" class="fas fa-user"
                                 style="color: rgb(129, 126, 126);"></i></a>
@@ -145,24 +187,110 @@
                 </ul>
             </div>
         </nav>
+        <!-- {% load widget_tweaks %} -->
+        <div id="btn-group-top" style="margin-bottom: 10px;">
+            <button class="btn btn-left" data-toggle="modal" data-target="#uploadWindow"><i
+                    class="fas fa-upload"> 上传数据</i></button>
+            <button class="btn btn-right">
+                <i class="fas fa-trash-alt"> 删除数据</i></button>
+            <button class="btn btn-right">    
+                <i class="fas fa-edit"> 重命名</i></button>
+        </div>
+        <div class="modal fade" id="uploadWindow" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <form action="" method="post" enctype="multipart/form-data" novalidate>
+                    <!-- {% csrf_token %}  -->
+                    <div class="modal-content">
+                        <div class="modal-header" style="border: 0px; margin: 0px;">
+                            <h5 class="modal-title" id="exampleModalLabel">上传你的数据</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body" style="padding-top: 0px; padding-bottom: 0px;">
+                            {% if form.non_field_errors %}
+                            <div class="alert alert-danger" role="alert">
+                                {% for error in form.non_field_errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            <div class="form-group">
+                                <!-- <label for="{{ form.datafile.id_for_label }}"></label>
+                            <input type="file" class="form-control-file" name="datafile" 
+                                    id="{{ form.datafile.id_for_label }}" required>  -->
+                                {% if form.is_bound %}
+
+                                {% if form.datafile.errors %}
+                                {% render_field form.datafile class="form-control is-invalid" %}
+                                {% for error in form.datafile.errors %}
+                                <div class="invalid-feedback">
+                                    {{ error }}
+                                </div>
+                                {% endfor %}
+                                {% else %}
+                                {% render_field form.datafile class="form-control-file is-valid" %}
+                                {% endif %}
+
+                                {% else %}
+                                {% render_field form.datafile class="form-control-file" %}
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                <!-- <label for="{{ form.description.id_for_label }}">备注（选填）：</label> -->
+                                {{ form.description.label_tag }}
+                                <!-- <textarea class="form-control" name="description" 
+                                    id="{{ form.description.id_for_label }}" rows="3"></textarea> -->
+                                {% if form.is_bound %}
+                                {% if form.description.errors %}
+                                {% render_field form.description class="form-control is-invalid" rows="3" %}
+                                {% for error in form.description.errors %}
+                                <div class="invalid-feedback">
+                                    {{ error }}
+                                </div>
+                                {% endfor %}
+                                {% else %}
+                                {% render_field form.description class="form-control is-valid" rows="3" %}
+                                {% endif %}
+                                {% else %}
+                                {% render_field form.description class="form-control" rows="3" %}
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+                        <div class="modal-footer" style="border: 0px; margin: 0px; padding-top: 0px">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">返回</button>
+                            <button type="submit" class="btn btn-primary">上传</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
         <div>
             <table id="filetable" class="table table-striped table-bordered" style="width:100%">
-    
+
                 <thead>
                     <tr>
+                        <th><input type="checkbox" id="all-select"></input></th>
                         <th>数据文件名</th>
                         <th>备注</th>
+                        <th>大小</th>
                         <th>创建时间</th>
-                        
+
                     </tr>
                 </thead>
                 <tbody>
                     {% if data %}
                     {% for datum in data %}
                     <tr>
+                        <td><input type="checkbox" id="{{ datum.id }}"></td>
                         <td>{{ datum.datafile.name }}</td>
                         <td>{{ datum.description }}</td>
-                        <td>{{ datum.createtime|date:"Y-m-d H:i:s" }}</td>    
+                        <td>{{ datum.datafile.size|filesizeformat }}</td>
+                        <td>{{ datum.createtime|date:"Y-m-d H:i:s" }}</td>
                     </tr>
                     {% endfor %}
                     {% else %}
@@ -197,9 +325,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <!-- <div class="modal-body">
-                确定要退出吗？
-            </div> -->
+                
                 <div class="modal-footer" style="border: 0px; margin: 0px;">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">返回</button>
                     <a href="{% url 'logout' %}"><button type="button" class="btn btn-primary">退出</button></a>
@@ -208,4 +334,5 @@
         </div>
     </div>
 </body>
+
 </html>
