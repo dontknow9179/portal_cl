@@ -9,24 +9,28 @@
     <title>Portal</title>
     <link rel="shortcut icon" href="{% static 'mainpage.ico' %}">
     <link rel="bookmark" href="{% static 'mainpage.ico' %}">
-    <!-- CSS -->   
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css"/>
+ 
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
         integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
     <link rel="stylesheet" href="https://www.bootcss.com/p/buttons/css/buttons.css">
+    
 
     <!-- JAVASCRIPT -->
     <script src="https://code.jquery.com/jquery-3.4.1.js"
         integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
-    <!-- <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script> -->
     <script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js"
         integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
     </script>
     <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
     </script>
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+    <title>表格测试</title>
     
     <style type="text/css">
         body {
@@ -85,8 +89,12 @@
             background: #e9e7e7;
         }
     </style>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#filetable').DataTable();
+        } );
+    </script>
 </head>
-
 <body>
     <div id="wrapper">
         <nav class="navbar header-top fixed-top navbar-expand-lg navbar-light"
@@ -99,21 +107,19 @@
             <div class="collapse navbar-collapse" id="navbarText">
                 <ul class="nav nav-pills navbar-nav side-nav" role="tablist">
                     <li class="nav-item">
-                    <a class="nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home"
-                        role="tab" aria-controls="nav-home" aria-selected="true">主页</a>
+                    <a class="nav-link" id="nav-home-tab" href="{% url 'index' %}" role="tab">主页</a>
                     </li>
                     <!-- <li class="nav-item">
                     <a class="nav-link" id="nav-p1-tab" data-toggle="tab" href="#nav-p1" role="tab"
                         aria-controls="nav-p1" aria-selected="false">我的数据</a>
                     </li> -->
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'showdata' %}" role="tab"
-                         aria-selected="false">我的数据</a>
+                        <a class="nav-link active" data-toggle="tab" href="{% url 'showdata' %}" role="tab">我的数据</a>
                     </li>
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                     <a class="nav-link" id="nav-p2-tab" data-toggle="tab" href="#nav-p2" role="tab"
                         aria-controls="nav-p2" aria-selected="false">数据分析</a>
-                    </li>
+                    </li> -->
                 </ul>
                 
                 <ul class="navbar-nav ml-md-auto d-md-flex">
@@ -139,29 +145,48 @@
                 </ul>
             </div>
         </nav>
-        <div class="tab-content">
+        <div>
+            <table id="filetable" class="table table-striped table-bordered" style="width:100%">
+    
+                <thead>
+                    <tr>
+                        <th>数据文件名</th>
+                        <th>备注</th>
+                        <th>创建时间</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if data %}
+                    {% for datum in data %}
+                    <tr>
+                        <td>{{ datum.datafile.name }}</td>
+                        <td>{{ datum.description }}</td>
+                        <td>{{ datum.createtime|date:"Y-m-d H:i:s" }}</td>    
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <p> No data </p>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+        <!-- <div class="tab-content">
             <div id="nav-home" class="tab-pane fade show active" role="tabpanel" aria-labelledby="nav-home-tab">
                 <div class="container-fluid">
                     <img src="{% static 'homepage.jpg' %}" style="height: 380px; width: 400px" class="img-fluid" alt="Responsive image">
                 </div>
                 
             </div>
-            <!-- <div id="nav-p1" class="tab-pane fade" role="tabpanel" aria-labelledby="nav-p1-tab">
+            <div id="nav-p1" class="tab-pane fade" role="tabpanel" aria-labelledby="nav-p1-tab">
                 <p>p1</p>
-            </div> -->
+            </div>
             <div id="nav-p2" class="tab-pane fade" role="tabpanel" aria-labelledby="nav-p2-tab">
                 <p>p2</p>
             </div>
-        </div>
+        </div> -->
     </div>
 
-    <!-- <div class="container-fluid">
-        <div class="row">
-
-
-        </div>
-    </div> -->
-    <!-- LOGOUT WINDOW -->
     <div class="modal fade" id="logoutWindow" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">

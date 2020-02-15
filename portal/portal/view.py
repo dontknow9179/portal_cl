@@ -53,7 +53,7 @@ def testform(request):
 
 def showdata(request):
     data = Data.objects.all()
-    return render(request, 'tabletest.html', {'data':data})
+    return render(request, 'showdata.html', {'data':data})
 
 
 

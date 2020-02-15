@@ -35,7 +35,7 @@ def register_(request):
         if pwd is None or len(pwd) == 0 or len(pwd) > 30:
             register_dict['passwordAlert'] = "密码长度不符合要求"
             legal = False
-        if not pwd == pwd_:
+        if not (pwd.strip() == pwd_.strip()):
             register_dict['passwordCheckAlert'] = "与初始密码不同"
             legal = False
 
@@ -83,6 +83,7 @@ def login_(request):
         user = authenticate(username=user_email, password=pwd)
         if user is None:
             login_dict['passwordIncorrect'] = "密码错误"
+            login_dict['useremail'] = user_email
             return render(request, "login.html", login_dict)
         else:
             login(request, user)
