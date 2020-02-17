@@ -62,6 +62,11 @@ def showdata(request):
 
 
 def deletedata(request):
-    pass
+    if request.method == 'POST':
+        delete_list = request.POST.getlist('checkbox_list')
+        print(delete_list)
+        return render(request, 'index.html')
+    else:
+        pass
 
         

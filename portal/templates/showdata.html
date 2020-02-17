@@ -114,6 +114,7 @@
         }
     </style>
     <script type="text/javascript">
+        
         $(document).ready(function () {
             $('#filetable').DataTable({
                 "columnDefs": [{
@@ -135,14 +136,26 @@
 
             $('#all-select').click(function () {
                 $("input[type='checkbox']").each(function () {
-                    if ($(this).attr("checked")) {
+                    if ($(this).prop("checked") && (!$('#all-select').prop("checked"))) {
                         $(this).removeAttr("checked");
-                    } else {
-                        $(this).attr("checked", "true");
+                    } else if ($('#all-select').prop("checked") && (!$(this).prop("checked"))){
+                        $(this).attr("checked", true);
                     }
                 })
             });
         });
+
+        function deletedata() {
+            var aa = '';
+            $("input[type='checkbox']:checkbox:checked").each(function(){ 
+                aa+=$(this).val() 
+            });
+            console.log(aa); 
+            var form = document.getElementById("checkbox-form");
+            form.action = "{% url 'deletedata' %}";
+            form.submit();
+            
+        }
     </script>
 </head>
 
@@ -214,7 +227,7 @@
         <div class="modal fade" id="uploadWindow" tabindex="-1" role="dialog" aria-labelledby="uploadWindowLabel"
             aria-hidden="true">
             <div class="modal-dialog" role="document">
-                <form action="" method="post" enctype="multipart/form-data" novalidate>
+                <form action="{% url 'showdata' %}" method="POST" enctype="multipart/form-data" novalidate>
                     <!-- {% csrf_token %}  -->
                     <div class="modal-content">
                         <div class="modal-header" style="border: 0px; margin: 0px;">
@@ -284,7 +297,9 @@
                 </form>
             </div>
         </div>
+        <!-- TABLE -->
         <div>
+            <form id="checkbox-form" action="" method="POST">
             <table id="filetable" class="table table-striped table-bordered" style="width:100%">
 
                 <thead>
@@ -298,19 +313,24 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% if data %}
-                    {% for datum in data %}
-                    <tr>
-                        <td><input type="checkbox" id="{{ datum.id }}"></td>
-                        <td>{{ datum.datafile.name }}</td>
-                        <td>{{ datum.description }}</td>
-                        <td>{{ datum.datafile.size|filesizeformat }}</td>
-                        <td>{{ datum.createtime|date:"Y-m-d H:i:s" }}</td>
-                    </tr>
-                    {% endfor %}
-                    {% endif %}
+                    
+                        <!-- {% csrf_token %}  -->
+                        {% if data %}
+                        {% for datum in data %}
+                        <tr>
+                            <td><input type="checkbox" id="{{ datum.id }}" name="checkbox_list" value="{{ datum.id }}">
+                            </td>
+                            <td>{{ datum.datafile.name }}</td>
+                            <td>{{ datum.description }}</td>
+                            <td>{{ datum.datafile.size|filesizeformat }}</td>
+                            <td>{{ datum.createtime|date:"Y-m-d H:i:s" }}</td>
+                        </tr>
+                        {% endfor %}
+                        {% endif %}
+                   
                 </tbody>
             </table>
+            </form>
         </div>
 
         <!-- {% endif %} -->
@@ -330,7 +350,7 @@
 
                 <div class="modal-footer" style="border: 0px; margin: 0px;">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">返回</button>
-                    <a href="{% url 'deletedata' %}"><button type="button" class="btn btn-danger">删除</button></a>
+                    <button type="button" class="btn btn-danger" onclick="deletedata()">删除</button>
                 </div>
             </div>
         </div>
