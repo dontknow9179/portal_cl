@@ -32,25 +32,6 @@ def register_page(request):
     return render(request, 'register.html', register_dict)
 
 
-def testform(request):   
-    if request.method == 'POST':
-        form = DataForm(request.POST, request.FILES)
-        if form.is_valid():
-            datafile = form.cleaned_data['datafile']
-            description = form.cleaned_data['description']
-            data = Data(nickname=request.user.userextension.nickname, 
-                        email=request.user.email, datafile=datafile, 
-                        description=description)
-            data.save()
-            # return render(request, 'formtest.html', {'form':form})
-            return HttpResponse('upload ok!')
-        else:
-            return render(request, 'formtest.html', {'form':form})
-    else:
-        form = DataForm()
-        return render(request, 'formtest.html', {'form':form})
-
-
 def showdata(request):
     showdata_dict = {}
     showdata_dict['success'] = False
@@ -69,12 +50,18 @@ def showdata(request):
             pass
     else:
         form = DataForm()
-        
-    data = Data.objects.all()
-    showdata_dict['data'] = data
+
+    if request.user.is_authenticated:    
+        data = Data.objects.filter(email=request.user.email)
+        showdata_dict['data'] = data
+    else:
+        pass
+    
     showdata_dict['form'] = form
     return render(request, 'showdata.html', showdata_dict)
 
 
+def deletedata(request):
+    pass
 
         

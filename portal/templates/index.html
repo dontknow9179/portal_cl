@@ -102,14 +102,19 @@
                     <a class="nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home"
                         role="tab" aria-controls="nav-home" aria-selected="true">主页</a>
                     </li>
-                    <!-- <li class="nav-item">
-                    <a class="nav-link" id="nav-p1-tab" data-toggle="tab" href="#nav-p1" role="tab"
-                        aria-controls="nav-p1" aria-selected="false">我的数据</a>
-                    </li> -->
+                    
+                    {% if user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'showdata' %}" role="tab"
                          aria-selected="false">我的数据</a>
                     </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="" data-toggle="modal" data-target="#loginRequest" role="tab"
+                         aria-selected="false">我的数据</a>
+                    </li>
+                    {% endif %}
+
                     <li class="nav-item">
                     <a class="nav-link" id="nav-p2-tab" data-toggle="tab" href="#nav-p2" role="tab"
                         aria-controls="nav-p2" aria-selected="false">数据分析</a>
@@ -118,6 +123,9 @@
                 
                 <ul class="navbar-nav ml-md-auto d-md-flex">
                     {% if not user.is_authenticated %}
+                    <li class="nav-item row align-items-center" style="margin-right: 20px">
+                        <a style="font-weight: 500; color: rgb(77, 77, 77);">Please login first.</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'login_page' %}"><i title="登录/注册" class="fas fa-user"
                                 style="color: rgb(129, 126, 126);"></i></a>
@@ -155,12 +163,30 @@
         </div>
     </div>
 
-    <!-- <div class="container-fluid">
-        <div class="row">
+    
 
-
+    <!-- LOGIN REQUEST -->
+    <!-- {% if not user.is_authenticated %} -->
+    <div class="modal fade" id="loginRequest" tabindex="-1" role="dialog" aria-labelledby="loginRequestLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="border: 0px; margin: 0px;">
+                    <h5 class="modal-title" id="loginRequestLabel">请先登录</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                
+                <div class="modal-footer" style="border: 0px; margin: 0px;">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">返回</button>
+                    <a href="{% url 'login' %}"><button type="button" class="btn btn-primary">登录</button></a>
+                </div>
+            </div>
         </div>
-    </div> -->
+    </div>
+    <!-- {% endif %} -->
+
     <!-- LOGOUT WINDOW -->
     <div class="modal fade" id="logoutWindow" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
@@ -172,9 +198,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <!-- <div class="modal-body">
-                确定要退出吗？
-            </div> -->
+                
                 <div class="modal-footer" style="border: 0px; margin: 0px;">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">返回</button>
                     <a href="{% url 'logout' %}"><button type="button" class="btn btn-primary">退出</button></a>

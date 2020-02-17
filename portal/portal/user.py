@@ -41,7 +41,6 @@ def register_(request):
 
         if legal == False:
             return render(request, "register.html", login_dict)
-        # successfully create new user
         
         try:
             user = UserExtension.objects.create_user(

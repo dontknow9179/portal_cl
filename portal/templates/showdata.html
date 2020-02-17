@@ -94,7 +94,7 @@
         }
 
         #btn-group-top .btn-left {
-            color:white; 
+            color: white;
             background-color: rgb(25, 140, 235);
         }
 
@@ -103,10 +103,10 @@
         }
 
         #btn-group-top .btn-right {
-            margin-left: 5px; 
-            background-color: #f9f9f9; 
-            border-color: rgb(156, 206, 247); 
-            color:rgb(73, 164, 238);
+            margin-left: 5px;
+            background-color: #f9f9f9;
+            border-color: rgb(156, 206, 247);
+            color: rgb(73, 164, 238);
         }
 
         #btn-group-top .btn-right:hover {
@@ -120,15 +120,28 @@
                     "orderable": false,
                     "targets": 0
                 }],
-                "order": [[4,'desc']]
+                "order": [
+                    [4, 'desc']
+                ]
             });
 
             // {% if form.is_bound %}
             $("#uploadWindow").modal("show");
             // {% endif %}
+
             // {% if success %}
-            alert("上传文件成功！")
+            alert("上传文件成功！");
             // {% endif %}
+
+            $('#all-select').click(function () {
+                $("input[type='checkbox']").each(function () {
+                    if ($(this).attr("checked")) {
+                        $(this).removeAttr("checked");
+                    } else {
+                        $(this).attr("checked", "true");
+                    }
+                })
+            });
         });
     </script>
 </head>
@@ -147,10 +160,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'index' %}" role="tab">主页</a>
                     </li>
-                    <!-- <li class="nav-item">
-                    <a class="nav-link" id="nav-p1-tab" data-toggle="tab" href="#nav-p1" role="tab"
-                        aria-controls="nav-p1" aria-selected="false">我的数据</a>
-                    </li> -->
+
                     <li class="nav-item">
                         <a class="nav-link active" href="{% url 'showdata' %}" role="tab">我的数据</a>
                     </li>
@@ -188,22 +198,27 @@
             </div>
         </nav>
         <!-- {% load widget_tweaks %} -->
+        <!-- {% if not user.is_authenticated %} -->
+        <h5>请先登录</h5>
+        <!-- {% else %} -->
+
         <div id="btn-group-top" style="margin-bottom: 10px;">
-            <button class="btn btn-left" data-toggle="modal" data-target="#uploadWindow"><i
-                    class="fas fa-upload"> 上传数据</i></button>
-            <button class="btn btn-right">
+            <button class="btn btn-left" data-toggle="modal" data-target="#uploadWindow"><i class="fas fa-upload">
+                    上传数据</i></button>
+            <button class="btn btn-right" data-toggle="modal" data-target="#deleteWindow">
                 <i class="fas fa-trash-alt"> 删除数据</i></button>
-            <button class="btn btn-right">    
+            <button class="btn btn-right">
                 <i class="fas fa-edit"> 重命名</i></button>
         </div>
-        <div class="modal fade" id="uploadWindow" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        <!-- UPLOAD WINDOW -->
+        <div class="modal fade" id="uploadWindow" tabindex="-1" role="dialog" aria-labelledby="uploadWindowLabel"
             aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <form action="" method="post" enctype="multipart/form-data" novalidate>
                     <!-- {% csrf_token %}  -->
                     <div class="modal-content">
                         <div class="modal-header" style="border: 0px; margin: 0px;">
-                            <h5 class="modal-title" id="exampleModalLabel">上传你的数据</h5>
+                            <h5 class="modal-title" id="uploadWindowLabel">上传你的数据</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -293,39 +308,46 @@
                         <td>{{ datum.createtime|date:"Y-m-d H:i:s" }}</td>
                     </tr>
                     {% endfor %}
-                    {% else %}
-                    <p> No data </p>
                     {% endif %}
                 </tbody>
             </table>
         </div>
-        <!-- <div class="tab-content">
-            <div id="nav-home" class="tab-pane fade show active" role="tabpanel" aria-labelledby="nav-home-tab">
-                <div class="container-fluid">
-                    <img src="{% static 'homepage.jpg' %}" style="height: 380px; width: 400px" class="img-fluid" alt="Responsive image">
-                </div>
-                
-            </div>
-            <div id="nav-p1" class="tab-pane fade" role="tabpanel" aria-labelledby="nav-p1-tab">
-                <p>p1</p>
-            </div>
-            <div id="nav-p2" class="tab-pane fade" role="tabpanel" aria-labelledby="nav-p2-tab">
-                <p>p2</p>
-            </div>
-        </div> -->
+
+        <!-- {% endif %} -->
     </div>
 
-    <div class="modal fade" id="logoutWindow" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    <!-- DELETE WINDOW -->
+    <div class="modal fade" id="deleteWindow" tabindex="-1" role="dialog" aria-labelledby="deleteWindowLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header" style="border: 0px; margin: 0px;">
-                    <h5 class="modal-title" id="exampleModalLabel">确定要退出吗？</h5>
+                    <h5 class="modal-title" id="deleteWindowLabel">确定要删除吗？</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                
+
+                <div class="modal-footer" style="border: 0px; margin: 0px;">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">返回</button>
+                    <a href="{% url 'deletedata' %}"><button type="button" class="btn btn-danger">删除</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOGOUT WINDOW -->
+    <div class="modal fade" id="logoutWindow" tabindex="-1" role="dialog" aria-labelledby="logoutWindowLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="border: 0px; margin: 0px;">
+                    <h5 class="modal-title" id="logoutWindowLabel">确定要退出吗？</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
                 <div class="modal-footer" style="border: 0px; margin: 0px;">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">返回</button>
                     <a href="{% url 'logout' %}"><button type="button" class="btn btn-primary">退出</button></a>
