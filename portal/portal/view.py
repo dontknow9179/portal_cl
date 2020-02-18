@@ -34,7 +34,7 @@ def register_page(request):
 
 def showdata(request):
     showdata_dict = {}
-    showdata_dict['success'] = False
+    # showdata_dict['success_add'] = False
     if request.method == 'POST':
         form = DataForm(request.POST, request.FILES)
         if form.is_valid():
@@ -44,7 +44,7 @@ def showdata(request):
                         email=request.user.email, datafile=datafile, 
                         description=description)
             data.save() 
-            showdata_dict['success'] = True         
+            showdata_dict['success_add'] = True         
             form = DataForm()
         else:
             pass
@@ -62,10 +62,22 @@ def showdata(request):
 
 
 def deletedata(request):
-    if request.method == 'POST':
+    if request.method == 'POST' and request.user.is_authenticated:
         delete_list = request.POST.getlist('checkbox_list')
         print(delete_list)
-        return render(request, 'index.html')
+        showdata_dict = {}
+        showdata_dict['success_del'] = True
+        for data_id in delete_list:
+            try:
+                Data.objects.filter(id=data_id).delete()
+            except Data.DoesNotExist:
+                print('delete: data does not exist')
+                showdata_dict['success_del'] = False
+
+        data = Data.objects.filter(email=request.user.email)
+        showdata_dict['data'] = data
+        showdata_dict['form'] = DataForm()
+        return render(request, 'showdata.html', showdata_dict)
     else:
         pass
 

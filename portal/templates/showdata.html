@@ -130,8 +130,12 @@
             $("#uploadWindow").modal("show");
             // {% endif %}
 
-            // {% if success %}
+            // {% if success_add %}
             alert("上传文件成功！");
+            // {% endif %}
+
+            // {% if success_del %}
+            alert("删除文件成功！");
             // {% endif %}
 
             $('#all-select').click(function () {
@@ -320,7 +324,7 @@
                         <tr>
                             <td><input type="checkbox" id="{{ datum.id }}" name="checkbox_list" value="{{ datum.id }}">
                             </td>
-                            <td>{{ datum.datafile.name }}</td>
+                            <td>{{ datum.filename }}</td>
                             <td>{{ datum.description }}</td>
                             <td>{{ datum.datafile.size|filesizeformat }}</td>
                             <td>{{ datum.createtime|date:"Y-m-d H:i:s" }}</td>
