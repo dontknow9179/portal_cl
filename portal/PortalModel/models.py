@@ -2,6 +2,8 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 import os
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 
 # Create your models here.
 class UserExtension(User):
@@ -10,7 +12,8 @@ class UserExtension(User):
 
 def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
-    return 'user_{0}/{1}'.format(instance.email, filename)
+    return os.path.join('user_' + instance.email, filename)
+    # return 'user_{0}/{1}'.format(instance.email, filename)
 
 
 class Data(models.Model):
@@ -28,3 +31,6 @@ class Data(models.Model):
         return os.path.basename(self.datafile.name)
 
     
+@receiver(post_delete, sender=Data)
+def submission_delete(sender, instance, **kwargs):
+    instance.datafile.delete(False)

@@ -30,6 +30,7 @@ urlpatterns = [
     path('user_page', user.user_page, name='user_page'),
     path('showdata', view.showdata, name='showdata'),
     path('deletedata', view.deletedata, name='deletedata'),
+    path('renamedata', view.renamedata, name='renamedata'),
     path('admin/', admin.site.urls),
     url(r'^static/(?P<path>.*)$', static.serve,
     {'document_root': settings.STATIC_ROOT}, name='static'),

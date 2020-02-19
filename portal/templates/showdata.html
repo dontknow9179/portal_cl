@@ -114,7 +114,6 @@
         }
     </style>
     <script type="text/javascript">
-        
         $(document).ready(function () {
             $('#filetable').DataTable({
                 "columnDefs": [{
@@ -141,22 +140,26 @@
             $('#all-select').click(function () {
                 $("input[type='checkbox']").each(function () {
                     if ($(this).prop("checked") && (!$('#all-select').prop("checked"))) {
-                        $(this).removeAttr("checked");
-                    } else if ($('#all-select').prop("checked") && (!$(this).prop("checked"))){
-                        $(this).attr("checked", true);
+                        $(this).prop("checked",false);
+                    } else if ($('#all-select').prop("checked") && (!$(this).prop("checked"))) {
+                        $(this).prop("checked",true);
                     }
-                })
+                });
             });
         });
 
         function deletedata() {
-            var aa = '';
-            $("input[type='checkbox']:checkbox:checked").each(function(){ 
-                aa+=$(this).val() 
-            });
-            console.log(aa); 
             var form = document.getElementById("checkbox-form");
             form.action = "{% url 'deletedata' %}";
+            form.submit();
+        }
+
+        function renamedata(){
+            var dataid = $('#table-body').find('input[type=checkbox]:checked').filter(':first').val();
+            var form = document.getElementById("rename-form");
+            document.getElementById("hidden-data-id").setAttribute("value",dataid);
+            
+            form.action = "{% url 'renamedata' %}";
             form.submit();
             
         }
@@ -224,7 +227,7 @@
                     上传数据</i></button>
             <button class="btn btn-right" data-toggle="modal" data-target="#deleteWindow">
                 <i class="fas fa-trash-alt"> 删除数据</i></button>
-            <button class="btn btn-right">
+            <button class="btn btn-right" data-toggle="modal" data-target="#renameWindow">
                 <i class="fas fa-edit"> 重命名</i></button>
         </div>
         <!-- UPLOAD WINDOW -->
@@ -301,29 +304,58 @@
                 </form>
             </div>
         </div>
+        <!-- RENAME WINDOW -->
+        <div class="modal fade" id="renameWindow" tabindex="-1" role="dialog" aria-labelledby="renameWindowLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <form id="rename-form" method="POST" action="">
+                    <!-- {% csrf_token %}  -->
+                    <div class="modal-content">
+                        <div class="modal-header" style="border: 0px; margin: 0px;">
+                            <h5 class="modal-title" id="renameWindowLabel">重命名你的数据</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body" style="padding-top: 0px; padding-bottom: 0px;">
+                            <div class="form-group">
+                                <input type="text" name="new_name" class="form-control" maxlength="70" placeholder="输入新的文件名">
+                            </div>
+                            <div class="form-group">
+                                <input type="hidden" value="" name="data_id" class="form-control" id="hidden-data-id">
+                            </div>
+                        </div>
+                        <div class="modal-footer" style="border: 0px; margin: 0px;">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">返回</button>
+                            <button type="button" class="btn btn-primary" onclick="renamedata()">确认</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
         <!-- TABLE -->
         <div>
             <form id="checkbox-form" action="" method="POST">
-            <table id="filetable" class="table table-striped table-bordered" style="width:100%">
+                <table id="filetable" class="table table-striped table-bordered" style="width:100%">
 
-                <thead>
-                    <tr>
-                        <th><input type="checkbox" id="all-select"></input></th>
-                        <th>数据文件名</th>
-                        <th>备注</th>
-                        <th>大小</th>
-                        <th>创建时间</th>
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="all-select"></input></th>
+                            <th>数据文件名</th>
+                            <th>备注</th>
+                            <th>大小</th>
+                            <th>创建时间</th>
 
-                    </tr>
-                </thead>
-                <tbody>
-                    
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+
                         <!-- {% csrf_token %}  -->
                         {% if data %}
                         {% for datum in data %}
                         <tr>
-                            <td><input type="checkbox" id="{{ datum.id }}" name="checkbox_list" value="{{ datum.id }}">
-                            </td>
+                            <td><input type="checkbox" id="{{ datum.id }}" 
+                                    name="checkbox_list" value="{{ datum.id }}"></td>
                             <td>{{ datum.filename }}</td>
                             <td>{{ datum.description }}</td>
                             <td>{{ datum.datafile.size|filesizeformat }}</td>
@@ -331,9 +363,9 @@
                         </tr>
                         {% endfor %}
                         {% endif %}
-                   
-                </tbody>
-            </table>
+
+                    </tbody>
+                </table>
             </form>
         </div>
 
