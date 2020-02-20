@@ -17,9 +17,7 @@ def user_directory_path(instance, filename):
 
 
 class Data(models.Model):
-    # filename = models.CharField(max_length=70)
     createtime = models.DateTimeField(default=timezone.now)
-    # position = models.CharField(max_length=300)
     nickname = models.CharField(max_length=50)
     email = models.CharField(max_length=150)
     datafile = models.FileField(upload_to=user_directory_path)
@@ -34,3 +32,14 @@ class Data(models.Model):
 @receiver(post_delete, sender=Data)
 def submission_delete(sender, instance, **kwargs):
     instance.datafile.delete(False)
+
+
+class Task(models.Model):
+    createtime = models.DateTimeField(default=timezone.now)
+    updatetime = models.DateTimeField(auto_now=True)
+    taskname = models.CharField(max_length=70)
+    email = models.CharField(max_length=150)
+    content = models.CharField(max_length=500)
+    description = models.CharField(max_length=200, blank=True)
+    state = models.IntegerField(default=0)
+    result = models.CharField(max_length=700, blank=True)

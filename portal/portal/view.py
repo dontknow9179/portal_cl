@@ -92,9 +92,6 @@ def renamedata(request):
         
         try:
             data = Data.objects.get(id=data_id)
-            # print(data.datafile.path)
-            # print(data.datafile.name)
-            
             p_dir = 'user_'+request.user.email
             new_path = os.path.join(settings.MEDIA_ROOT, os.path.join(p_dir, new_name))
             os.rename(data.datafile.path, new_path)
