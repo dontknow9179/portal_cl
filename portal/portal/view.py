@@ -68,14 +68,17 @@ def deletedata(request):
         delete_list = request.POST.getlist('checkbox_list')
         showdata_dict = {}
         showdata_dict['success_del'] = True
-        for data_id in delete_list:
-            try:
-                data = Data.objects.get(id=data_id)
-                submission_delete(Data,data)
-                data.delete()
-            except Data.DoesNotExist:
-                print('delete: data does not exist')
-                showdata_dict['success_del'] = False
+        if delete_list is None:
+            showdata_dict['success_del'] = False
+        else:
+            for data_id in delete_list:
+                try:
+                    data = Data.objects.get(id=data_id)
+                    submission_delete(Data,data)
+                    data.delete()
+                except Data.DoesNotExist:
+                    print('delete: data does not exist')
+                    showdata_dict['success_del'] = False
 
         data = Data.objects.filter(email=request.user.email)
         showdata_dict['data'] = data
@@ -89,21 +92,26 @@ def renamedata(request):
     if request.method == 'POST' and request.user.is_authenticated:    
         new_name = request.POST.get('new_name')
         data_id = request.POST.get('data_id')
-        
-        try:
-            data = Data.objects.get(id=data_id)
-            p_dir = 'user_'+request.user.email
-            new_path = os.path.join(settings.MEDIA_ROOT, os.path.join(p_dir, new_name))
-            os.rename(data.datafile.path, new_path)
-            data.datafile.name = os.path.join(p_dir, new_name)
-            data.save()
-            # print(data.datafile.path)
-            # print(data.datafile.name)
-        except Data.DoesNotExist:
-            print('rename: data does not exist')
+        showdata_dict = {}
+        showdata_dict['success_re'] = True
+        if new_name is None or len(new_name) == 0 or len(new_name) > 70 or data_id is None:
+            showdata_dict['success_re'] = False
+        else:
+            try:
+                data = Data.objects.get(id=data_id)
+                p_dir = 'user_'+request.user.email
+                new_path = os.path.join(settings.MEDIA_ROOT, os.path.join(p_dir, new_name))
+                os.rename(data.datafile.path, new_path)
+                data.datafile.name = os.path.join(p_dir, new_name)
+                data.save()
+                # print(data.datafile.path)
+                # print(data.datafile.name)
+            except Data.DoesNotExist:
+                print('rename: data does not exist')
+                showdata_dict['success_re'] = False
 
         data = Data.objects.filter(email=request.user.email)
-        showdata_dict = {}
+        
         showdata_dict['data'] = data
         showdata_dict['form'] = DataForm()
         return render(request, 'showdata.html', showdata_dict)

@@ -129,12 +129,16 @@
             $("#uploadWindow").modal("show");
             // {% endif %}
 
-            // {% if success_add %}
-            alert("上传文件成功！");
+            // {% if success_add is False %}
+            alert("上传文件失败！");
             // {% endif %}
 
-            // {% if success_del %}
-            alert("删除文件成功！");
+            // {% if success_del is False %}
+            alert("删除文件出错！");
+            // {% endif %}
+
+            // {% if success_re is False %}
+            alert("重命名文件出错！");
             // {% endif %}
 
             $('#all-select').click(function () {
@@ -156,12 +160,21 @@
 
         function renamedata(){
             var dataid = $('#table-body').find('input[type=checkbox]:checked').filter(':first').val();
+            
             var form = document.getElementById("rename-form");
             document.getElementById("hidden-data-id").setAttribute("value",dataid);
-            
+            var new_name_input = document.getElementById("new-name-id");
+            if(dataid == null){
+                new_name_input.setAttribute("placeholder","没有选中文件");
+                return;
+            }
+            if(new_name_input.value.length < 1){
+                new_name_input.setAttribute("placeholder","文件名不能为空");
+                return;
+            }
+
             form.action = "{% url 'renamedata' %}";
-            form.submit();
-            
+            form.submit();            
         }
     </script>
 </head>
@@ -234,7 +247,7 @@
         <div class="modal fade" id="uploadWindow" tabindex="-1" role="dialog" aria-labelledby="uploadWindowLabel"
             aria-hidden="true">
             <div class="modal-dialog" role="document">
-                <form action="{% url 'showdata' %}" method="POST" enctype="multipart/form-data" novalidate>
+                <form action="{% url 'showdata' %}" method="POST" enctype="multipart/form-data">
                     <!-- {% csrf_token %}  -->
                     <div class="modal-content">
                         <div class="modal-header" style="border: 0px; margin: 0px;">
@@ -319,7 +332,8 @@
                         </div>
                         <div class="modal-body" style="padding-top: 0px; padding-bottom: 0px;">
                             <div class="form-group">
-                                <input type="text" name="new_name" class="form-control" maxlength="70" placeholder="输入新的文件名（含扩展名）" required>
+                                <input type="text" name="new_name" class="form-control" 
+                                    maxlength="70" placeholder="输入新的文件名（含扩展名）" id="new-name-id">
                             </div>
                             <div class="form-group">
                                 <input type="hidden" value="" name="data_id" class="form-control" id="hidden-data-id">
