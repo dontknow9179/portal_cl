@@ -31,7 +31,7 @@
     </script>
     <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
-    <title>表格测试</title>
+
 
     <style type="text/css">
         body {
@@ -129,24 +129,17 @@
             $("#uploadWindow").modal("show");
             // {% endif %}
 
-            // {% if success_add is False %}
-            alert("上传文件失败！");
+            // {% if error_message %}
+            alert("{{ error_message }}");
             // {% endif %}
 
-            // {% if success_del is False %}
-            alert("删除文件出错！");
-            // {% endif %}
-
-            // {% if success_re is False %}
-            alert("重命名文件出错！");
-            // {% endif %}
 
             $('#all-select').click(function () {
-                $("input[type='checkbox']").each(function () {
+                $('#table-body').find("input[type='checkbox']").each(function () {
                     if ($(this).prop("checked") && (!$('#all-select').prop("checked"))) {
-                        $(this).prop("checked",false);
+                        $(this).prop("checked", false);
                     } else if ($('#all-select').prop("checked") && (!$(this).prop("checked"))) {
-                        $(this).prop("checked",true);
+                        $(this).prop("checked", true);
                     }
                 });
             });
@@ -158,23 +151,28 @@
             form.submit();
         }
 
-        function renamedata(){
+        function renamedata() {
             var dataid = $('#table-body').find('input[type=checkbox]:checked').filter(':first').val();
-            
+
             var form = document.getElementById("rename-form");
-            document.getElementById("hidden-data-id").setAttribute("value",dataid);
+            document.getElementById("hidden-data-id").setAttribute("value", dataid);
             var new_name_input = document.getElementById("new-name-id");
-            if(dataid == null){
-                new_name_input.setAttribute("placeholder","没有选中文件");
+            if (dataid == null) {
+                new_name_input.value = '';
+                new_name_input.setAttribute("placeholder", "没有选中文件");
                 return;
             }
-            if(new_name_input.value.length < 1){
-                new_name_input.setAttribute("placeholder","文件名不能为空");
+            if (new_name_input.value.length < 1) {
+                new_name_input.setAttribute("placeholder", "文件名不能为空");
+                return;
+            }
+            if (new_name_input.value.length > 70) {
+                new_name_input.setAttribute("placeholder", "文件名过长");
                 return;
             }
 
             form.action = "{% url 'renamedata' %}";
-            form.submit();            
+            form.submit();
         }
     </script>
 </head>
@@ -194,20 +192,30 @@
                         <a class="nav-link" href="{% url 'index' %}" role="tab">主页</a>
                     </li>
 
+                    {% if user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link active" href="{% url 'showdata' %}" role="tab">我的数据</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'showdata' %}" role="tab">数据分析</a>
+                        <a class="nav-link" href="{% url 'showtask' %}" role="tab">数据分析</a>
                     </li>
-                    <!-- <li class="nav-item">
-                    <a class="nav-link" id="nav-p2-tab" data-toggle="tab" href="#nav-p2" role="tab"
-                        aria-controls="nav-p2" aria-selected="false">数据分析</a>
-                    </li> -->
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link active" href="" data-toggle="modal" data-target="#loginRequest"
+                            role="tab">我的数据</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="" data-toggle="modal" data-target="#loginRequest" role="tab">数据分析</a>
+                    </li>
+                    {% endif %}
+
                 </ul>
 
                 <ul class="navbar-nav ml-md-auto d-md-flex">
                     {% if not user.is_authenticated %}
+                    <li class="nav-item row align-items-center" style="margin-right: 20px">
+                        <a style="font-weight: 500; color: rgb(77, 77, 77);">Please login first.</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'login_page' %}"><i title="登录/注册" class="fas fa-user"
                                 style="color: rgb(129, 126, 126);"></i></a>
@@ -317,6 +325,25 @@
                 </form>
             </div>
         </div>
+        <!-- DELETE WINDOW -->
+        <div class="modal fade" id="deleteWindow" tabindex="-1" role="dialog" aria-labelledby="deleteWindowLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header" style="border: 0px; margin: 0px;">
+                        <h5 class="modal-title" id="deleteWindowLabel">确定要删除吗？</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-footer" style="border: 0px; margin: 0px;">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">返回</button>
+                        <button type="button" class="btn btn-danger" onclick="deletedata()">删除</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- RENAME WINDOW -->
         <div class="modal fade" id="renameWindow" tabindex="-1" role="dialog" aria-labelledby="renameWindowLabel"
             aria-hidden="true">
@@ -332,8 +359,8 @@
                         </div>
                         <div class="modal-body" style="padding-top: 0px; padding-bottom: 0px;">
                             <div class="form-group">
-                                <input type="text" name="new_name" class="form-control" 
-                                    maxlength="70" placeholder="输入新的文件名（含扩展名）" id="new-name-id">
+                                <input type="text" name="new_name" class="form-control" maxlength="70"
+                                    placeholder="输入新的文件名（含扩展名）" id="new-name-id">
                             </div>
                             <div class="form-group">
                                 <input type="hidden" value="" name="data_id" class="form-control" id="hidden-data-id">
@@ -368,8 +395,8 @@
                         {% if data %}
                         {% for datum in data %}
                         <tr>
-                            <td><input type="checkbox" id="{{ datum.id }}" 
-                                    name="checkbox_list" value="{{ datum.id }}"></td>
+                            <td><input type="checkbox" id="{{ datum.id }}" name="checkbox_list" value="{{ datum.id }}">
+                            </td>
                             <td>{{ datum.filename }}</td>
                             <td>{{ datum.description }}</td>
                             <td>{{ datum.datafile.size|filesizeformat }}</td>
@@ -386,13 +413,16 @@
         <!-- {% endif %} -->
     </div>
 
-    <!-- DELETE WINDOW -->
-    <div class="modal fade" id="deleteWindow" tabindex="-1" role="dialog" aria-labelledby="deleteWindowLabel"
+
+
+    <!-- LOGIN REQUEST -->
+    <!-- {% if not user.is_authenticated %} -->
+    <div class="modal fade" id="loginRequest" tabindex="-1" role="dialog" aria-labelledby="loginRequestLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header" style="border: 0px; margin: 0px;">
-                    <h5 class="modal-title" id="deleteWindowLabel">确定要删除吗？</h5>
+                    <h5 class="modal-title" id="loginRequestLabel">请先登录</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -400,11 +430,12 @@
 
                 <div class="modal-footer" style="border: 0px; margin: 0px;">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">返回</button>
-                    <button type="button" class="btn btn-danger" onclick="deletedata()">删除</button>
+                    <a href="{% url 'login' %}"><button type="button" class="btn btn-primary">登录</button></a>
                 </div>
             </div>
         </div>
     </div>
+    <!-- {% endif %} -->
 
     <!-- LOGOUT WINDOW -->
     <div class="modal fade" id="logoutWindow" tabindex="-1" role="dialog" aria-labelledby="logoutWindowLabel"

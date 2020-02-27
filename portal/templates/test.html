@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Portal</title>
+    <link rel="shortcut icon" href="{% static 'mainpage.ico' %}">
+    <link rel="bookmark" href="{% static 'mainpage.ico' %}">
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css"
+        href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" />
+
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+        integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://www.bootcss.com/p/buttons/css/buttons.css">
+
+
+    <!-- JAVASCRIPT -->
+    <script src="https://code.jquery.com/jquery-3.4.1.js"
+        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+    <script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+    </script>
+
+</head>
+
+<body>
+    <!-- TASKNAME -->
+    <div class="form-group">
+        {{ form.taskname.label_tag }}
+        {% if form.is_bound %}
+        {% if form.taskname.errors %}
+        {% render_field form.taskname class="form-control is-invalid" %}
+        {% for error in form.taskname.errors %}
+        <div class="invalid-feedback">
+            {{ error }}
+        </div>
+        {% endfor %}
+        {% else %}
+        {% render_field form.taskname class="form-control is-valid" %}
+        {% endif %}
+        {% else %}
+        {% render_field form.taskname class="form-control" %}
+        {% endif %}
+    </div>
+    <!-- DESCRIPTION -->
+    <div class="form-group">
+        {{ form.description.label_tag }}
+        {% if form.is_bound %}
+        {% if form.description.errors %}
+        {% render_field form.description class="form-control is-invalid" rows="3" %}
+        {% for error in form.description.errors %}
+        <div class="invalid-feedback">
+            {{ error }}
+        </div>
+        {% endfor %}
+        {% else %}
+        {% render_field form.description class="form-control is-valid" rows="3" %}
+        {% endif %}
+        {% else %}
+        {% render_field form.description class="form-control" rows="3" %}
+        {% endif %}
+    </div>
+    <!-- CONTENT -->
+    <div class="form-group">
+        {{ form.content.errors }}
+        {{ form.content.label_tag }}
+        {{ form.content }}
+    </div>
+
+    {% if form.content.errors %}
+    {% for error in form.content.errors %}
+    <div class="invalid-feedback">
+        {{ error }}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <div class="dropdown">
+        <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            {{ form.content.field.label }}
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            {% for choice_id, choice_label in form.content.field.choices %}
+            <a class="dropdown-item"><input type="checkbox" name="content"
+                    value="{{ choice_id }}">{{ choice_label }}</a>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,4 +1,6 @@
 from django import forms
+from django.contrib.auth.models import User
+from PortalModel.models import Data, UserExtension
 
 class DataForm(forms.Form):
     datafile = forms.FileField(
@@ -14,6 +16,31 @@ class DataForm(forms.Form):
         error_messages={'max_length':'备注不能超过200字'}
     )
     
+
+class TaskForm(forms.Form):
+    taskname = forms.CharField(
+        max_length=70,
+        required=True,
+        label='任务名',
+        error_messages={'required':'任务名不能为空','max_length':'任务名不能超过70个字'}
+    )
+    description = forms.CharField(
+        max_length=200,
+        required=False,
+        label='备注(选填)',
+        widget=forms.Textarea(),
+        error_messages={'max_length':'备注不能超过200字'}
+    )
+    content = forms.MultipleChoiceField(
+        widget=forms.CheckboxSelectMultiple,
+        required=True,
+        label='选择任务所需的数据'
+    )
+    def __init__(self, *args, **kwargs):
+        user_email = kwargs.pop('user_email', None)
+        super(TaskForm, self).__init__(*args, **kwargs)
+        self.fields['content'].choices = [(x.id, x.filename) for x in Data.objects.filter(email=user_email)]
+
 
 class LoginForm(forms.Form):
     user_email = forms.EmailField(

@@ -9,7 +9,7 @@
     <title>Portal</title>
     <link rel="shortcut icon" href="{% static 'mainpage.ico' %}">
     <link rel="bookmark" href="{% static 'mainpage.ico' %}">
-    <!-- CSS -->   
+    <!-- CSS -->
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
@@ -27,7 +27,7 @@
     <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
     </script>
-    
+
     <style type="text/css">
         body {
             background: #f9f9f9;
@@ -67,11 +67,13 @@
             padding-top: 7px;
 
         }
+
         /* #navbarText .nav-pills .nav-item.show .nav-link, */
         #navbarText .nav-pills .nav-item .nav-link.active {
             color: rgb(25, 140, 235);
             background: #dfdddd;
         }
+
         #navbarText .nav-link {
             color: rgb(65, 64, 64);
             font-weight: 500;
@@ -80,11 +82,14 @@
             -moz-border-radius: 0;
             border-radius: 0;
         }
+
         #navbarText .nav-link:hover {
             border: none;
             background: #e9e7e7;
         }
     </style>
+    {% block head %}
+    {% endblock head %}
 </head>
 
 <body>
@@ -99,28 +104,30 @@
             <div class="collapse navbar-collapse" id="navbarText">
                 <ul class="nav nav-pills navbar-nav side-nav" role="tablist">
                     <li class="nav-item">
-                    <a class="nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home"
-                        role="tab" aria-controls="nav-home" aria-selected="true">主页</a>
+                        <a class="nav-link active" id="nav-home-tab" href="{% url 'index' %}" role="tab">主页</a>
                     </li>
-                    
+
                     {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'showdata' %}" role="tab"
-                         aria-selected="false">我的数据</a>
+                        <a class="nav-link" id="nav-data-tab" href="{% url 'showdata' %}" role="tab">我的数据</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="nav-task-tab" href="{% url 'showtask' %}" role="tab">数据分析</a>
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="" data-toggle="modal" data-target="#loginRequest" role="tab"
-                         aria-selected="false">我的数据</a>
+                        <a class="nav-link" id="nav-data-tab" href="" data-toggle="modal" data-target="#loginRequest"
+                            role="tab">我的数据</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="nav-task-tab" href="" data-toggle="modal" data-target="#loginRequest"
+                            role="tab">数据分析</a>
                     </li>
                     {% endif %}
 
-                    <li class="nav-item">
-                    <a class="nav-link" id="nav-p2-tab" data-toggle="tab" href="#nav-p2" role="tab"
-                        aria-controls="nav-p2" aria-selected="false">数据分析</a>
-                    </li>
+
                 </ul>
-                
+
                 <ul class="navbar-nav ml-md-auto d-md-flex">
                     {% if not user.is_authenticated %}
                     <li class="nav-item row align-items-center" style="margin-right: 20px">
@@ -132,9 +139,10 @@
                     </li>
                     {% else %}
                     <li class="nav-item row align-items-center" style="margin-right: 20px">
-                        <a style="font-weight: 500; color: rgb(77, 77, 77);">welcome, {{ user.userextension.nickname }}</a>
+                        <a style="font-weight: 500; color: rgb(77, 77, 77);">welcome,
+                            {{ user.userextension.nickname }}</a>
                     </li>
-                    
+
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'user_page' %}"><i title="我的账户" class="fas fa-user"
                                 style="color: rgb(129, 126, 126);"></i></a>
@@ -147,23 +155,13 @@
                 </ul>
             </div>
         </nav>
-        <div class="tab-content">
-            <div id="nav-home" class="tab-pane fade show active" role="tabpanel" aria-labelledby="nav-home-tab">
-                <div class="container-fluid">
-                    <img src="{% static 'homepage.jpg' %}" style="height: 380px; width: 400px" class="img-fluid" alt="Responsive image">
-                </div>
-                
-            </div>
-            <!-- <div id="nav-p1" class="tab-pane fade" role="tabpanel" aria-labelledby="nav-p1-tab">
-                <p>p1</p>
-            </div> -->
-            <div id="nav-p2" class="tab-pane fade" role="tabpanel" aria-labelledby="nav-p2-tab">
-                <p>p2</p>
-            </div>
+        {% block content %}
+        <div class="container-fluid">
+            <img src="{% static 'homepage.jpg' %}" style="height: 380px; width: 400px" class="img-fluid"
+                alt="Responsive image">
         </div>
+        {% endblock %}
     </div>
-
-    
 
     <!-- LOGIN REQUEST -->
     <!-- {% if not user.is_authenticated %} -->
@@ -177,7 +175,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                
+
                 <div class="modal-footer" style="border: 0px; margin: 0px;">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">返回</button>
                     <a href="{% url 'login' %}"><button type="button" class="btn btn-primary">登录</button></a>
@@ -198,7 +196,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                
+
                 <div class="modal-footer" style="border: 0px; margin: 0px;">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">返回</button>
                     <a href="{% url 'logout' %}"><button type="button" class="btn btn-primary">退出</button></a>
@@ -207,4 +205,5 @@
         </div>
     </div>
 </body>
+
 </html>

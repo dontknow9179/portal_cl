@@ -1,0 +1,270 @@
+{% extends "index.html" %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" />
+<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+<style type="text/css">
+    #btn-group-top .btn-left {
+        color: white;
+        background-color: rgb(25, 140, 235);
+    }
+
+    #btn-group-top .btn-left:hover {
+        background-color: rgb(22, 130, 219);
+    }
+
+    #btn-group-top .btn-right {
+        margin-left: 5px;
+        background-color: #f9f9f9;
+        border-color: rgb(156, 206, 247);
+        color: rgb(73, 164, 238);
+    }
+
+    #btn-group-top .btn-right:hover {
+        color: rgb(66, 146, 212);
+    }
+</style>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $("#nav-home-tab").removeClass("active");
+
+        $("#nav-task-tab").addClass("active");
+
+        // {% if form.is_bound %}
+        $("#newtaskWindow").modal("show");
+        // {% endif %}
+
+        // {% if error_message %}
+        alert("{{ error_message }}");
+        // {% endif %}
+
+        $('#tasktable').DataTable({
+            "columnDefs": [{
+                "orderable": false,
+                "targets": 0
+            }],
+            "order": [
+                [3, 'desc']
+            ]
+        });
+
+        $('#all-select').click(function () {
+            $('#table-body').find("input[type='checkbox']").each(function () {
+                if ($(this).prop("checked") && (!$('#all-select').prop("checked"))) {
+                    $(this).prop("checked", false);
+                } else if ($('#all-select').prop("checked") && (!$(this).prop("checked"))) {
+                    $(this).prop("checked", true);
+                }
+            });
+        });
+    });
+
+    function deletetask() {
+        var form = document.getElementById("checkbox-form");
+        form.action = "{% url 'deletetask' %}";
+        form.submit();
+    }
+
+    function renametask() {
+        var taskid = $('#table-body').find('input[type=checkbox]:checked').filter(':first').val();
+        var form = document.getElementById("rename-form");
+        document.getElementById("hidden-task-id").value = taskid;
+        var new_name_input = document.getElementById("new-name-id");
+        if (taskid == null) {
+            new_name_input.value = '';
+            new_name_input.setAttribute("placeholder", "没有选中任务");
+            return;
+        }
+        if (new_name_input.value.length < 1) {
+            new_name_input.setAttribute("placeholder", "任务名不能为空");
+            return;
+        }
+        if (new_name_input.value.length > 70) {
+            new_name_input.setAttribute("placeholder", "任务名过长");
+            return;
+        }
+        form.action = "{% url 'renametask' %}";
+        form.submit();
+    }
+</script>
+{% endblock head %}
+
+{% block content %}
+<!-- {% if not user.is_authenticated %} -->
+<h5>请先登录</h5>
+<!-- {% else %} -->
+<!-- {% load widget_tweaks %} -->
+<div id="btn-group-top" style="margin-bottom: 10px;">
+    <button class="btn btn-left" data-toggle="modal" data-target="#newtaskWindow"><i class="fas fa-upload">
+            新建分析任务</i></button>
+    <button class="btn btn-right" data-toggle="modal" data-target="#deleteWindow">
+        <i class="fas fa-trash-alt"> 删除任务</i></button>
+    <button class="btn btn-right" data-toggle="modal" data-target="#renameWindow">
+        <i class="fas fa-edit"> 重命名任务</i></button>
+</div>
+<!-- TABLE -->
+<div>
+    <form id="checkbox-form" action="" method="POST">
+        <!-- {% csrf_token %}  -->
+        <table id="tasktable" class="table table-striped table-bordered" style="width:100%">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" id="all-select"></input></th>
+                    <th>数据文件名</th>
+                    <th>备注</th>
+                    <th>修改时间</th>
+                    <th>创建时间</th>
+                </tr>
+            </thead>
+            <tbody id="table-body">
+                {% if tasks %}
+                {% for task in tasks %}
+                <tr>
+                    <td><input type="checkbox" id="{{ task.id }}" name="checkbox_list" value="{{ task.id }}"></td>
+                    <td>{{ task.taskname }}</td>
+                    <td>{{ task.description }}</td>
+                    <td>{{ task.updatetime|date:"Y-m-d H:i:s" }}</td>
+                    <td>{{ task.createtime|date:"Y-m-d H:i:s" }}</td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </form>
+</div>
+<!-- NEWTASK WINDOW -->
+<div class="modal fade" id="newtaskWindow" tabindex="-1" role="dialog" aria-labelledby="newtaskWindowLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document" style="height: 700px;">
+        <form id="newtask-form" method="POST" action="{% url 'showtask' %}" novalidate>
+            <!-- {% csrf_token %}  -->
+            <div class="modal-content">
+                <div class="modal-header" style="border: 0px; margin: 0px;">
+                    <h5 class="modal-title" id="newtaskWindowLabel">新建一个数据分析任务</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body" style="padding-top: 0px; padding-bottom: 0px;">
+                    <!-- TASKNAME -->
+                    <div class="form-group">
+                        {{ form.taskname.label_tag }}
+                        {% if form.is_bound %}
+                        {% if form.taskname.errors %}
+                        {% render_field form.taskname class="form-control is-invalid" %}
+                        {% for error in form.taskname.errors %}
+                        <div class="invalid-feedback">
+                            {{ error }}
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        {% render_field form.taskname class="form-control is-valid" %}
+                        {% endif %}
+                        {% else %}
+                        {% render_field form.taskname class="form-control" %}
+                        {% endif %}
+                    </div>
+                    <!-- DESCRIPTION -->
+                    <div class="form-group">
+                        {{ form.description.label_tag }}
+                        {% if form.is_bound %}
+                        {% if form.description.errors %}
+                        {% render_field form.description class="form-control is-invalid" rows="3" %}
+                        {% for error in form.description.errors %}
+                        <div class="invalid-feedback">
+                            {{ error }}
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        {% render_field form.description class="form-control is-valid" rows="3" %}
+                        {% endif %}
+                        {% else %}
+                        {% render_field form.description class="form-control" rows="3" %}
+                        {% endif %}
+                    </div>
+                    <!-- CONTENT -->
+                    <div class="dropdown">
+                        <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{ form.content.field.label }}
+                        </button>
+                        <br>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            {% for choice_id, choice_label in form.content.field.choices %}
+                            <a class="dropdown-item"><input type="checkbox" name="content"
+                                    value="{{ choice_id }}">{{ choice_label }}</a>
+                            {% endfor %}
+                        </div>
+                        {% if form.content.errors %}
+                        {% for error in form.content.errors %}
+                        <small style="color: rgb(230, 31, 31);">
+                            {{ error }}
+                        </small>
+                        <br>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+
+                </div>
+                <div class="modal-footer" style="border: 0px; margin: 0px;">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">返回</button>
+                    <button type="submit" class="btn btn-primary">确认</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- DELETE WINDOW -->
+<div class="modal fade" id="deleteWindow" tabindex="-1" role="dialog" aria-labelledby="deleteWindowLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="border: 0px; margin: 0px;">
+                <h5 class="modal-title" id="deleteWindowLabel">确定要删除吗？</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-footer" style="border: 0px; margin: 0px;">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">返回</button>
+                <button type="button" class="btn btn-danger" onclick="deletetask()">删除</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- RENAME WINDOW -->
+<div class="modal fade" id="renameWindow" tabindex="-1" role="dialog" aria-labelledby="renameWindowLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <form id="rename-form" method="POST" action="">
+            <!-- {% csrf_token %}  -->
+            <div class="modal-content">
+                <div class="modal-header" style="border: 0px; margin: 0px;">
+                    <h5 class="modal-title" id="renameWindowLabel">重命名你的任务</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="padding-top: 0px; padding-bottom: 0px;">
+                    <div class="form-group">
+                        <input type="text" name="new_name" class="form-control" maxlength="70" placeholder="输入新的任务名"
+                            id="new-name-id">
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" value="" name="task_id" class="form-control" id="hidden-task-id">
+                    </div>
+                </div>
+                <div class="modal-footer" style="border: 0px; margin: 0px;">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">返回</button>
+                    <button type="button" class="btn btn-primary" onclick="renametask()">确认</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- {% endif %} -->
+
+{% endblock %}
